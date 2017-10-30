@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ContactsApp</string>
+
+    <string name="facebook_app_id">179213255963778</string>
+    <string name="fb_login_protocol_scheme">fb179213255963778</string>
+    <string name="title_activity_contact">ContactActivity</string>
+
+</resources>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "458276713572",
+    "firebase_url": "https://contactsapp-6aa7a.firebaseio.com",
+    "project_id": "contactsapp-6aa7a",
+    "storage_bucket": "contactsapp-6aa7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458276713572:android:dca3a0ef668ec6a0",
+        "android_client_info": {
+          "package_name": "com.example.admin.contactsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458276713572-fqmkph6d323rsev6gch2m45evnaeanfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.admin.contactsapp",
+            "certificate_hash": "7e9177d4e06c20366efa1291a50e2e7bd4e28e60"
+          }
+        },
+        {
+          "client_id": "458276713572-jo6pj0f052b5trrajt8vl2bascboaj49.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8bfLJ_sCETX-TCZnoB7pZhI33b-fcocU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458276713572-jo6pj0f052b5trrajt8vl2bascboaj49.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

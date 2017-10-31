@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -18,7 +17,6 @@ public class EditContactFragment extends Fragment {
 
     EditText etFName, etLName, etPhoneN, etComp;
     ImageView ivImageEdit;
-    Button btnSaveEdit;
 
     public EditContactFragment() {
         // Required empty public constructor
@@ -45,13 +43,6 @@ public class EditContactFragment extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeByteArray(contactPhoto, 0, contactPhoto.length);
         ivImageEdit.setImageBitmap(bitmap);
 
-        btnSaveEdit = view.findViewById(R.id.btnSaveEdit);
-        btnSaveEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         return view;
     }
 

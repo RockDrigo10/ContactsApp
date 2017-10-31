@@ -15,20 +15,21 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.admin.contactsapp.R;
-import com.example.admin.contactsapp.data.DatabaseHelper;
 import com.example.admin.contactsapp.model.Contact;
+import com.example.admin.contactsapp.model.Result;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ContactFragment extends Fragment {
+public class ContactFragment extends Fragment implements ContactViewContract.View {
     public static final int CAMERA_REQUEST = 1888;
-
-    Contact contact;
+    private ContactViewPresenter contactPresenter;
+    private Contact contact;
     ArrayList<Contact> contacts;
     @BindView(R.id.ivContactImage)
     ImageView ivContactImage;
@@ -71,6 +72,9 @@ public class ContactFragment extends Fragment {
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+        contactPresenter = new ContactViewPresenter();
+        contactPresenter.attachView(this);
+        contactPresenter.setContext(ContactFragment.this.getActivity());
         contacts = new ArrayList<>();
         btnSave = view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -81,9 +85,7 @@ public class ContactFragment extends Fragment {
                             etFirstName.getText().toString().trim(), etLastName.getText().toString().trim(),
                             etPhone.getText().toString().trim(), etCompany.getText().toString().trim(),
                             imageViewToByte());
-                    DatabaseHelper db = new DatabaseHelper(ContactFragment.this.getActivity());
-                    db.saveNewContact(contact);
-                    Toast.makeText(ContactFragment.this.getActivity(), "Sucessfully Added", Toast.LENGTH_LONG).show();
+                    contactPresenter.saveContacts(contact);
                     Intent intent = new Intent(ContactFragment.this.getActivity(), ContactActivity.class);
                     startActivity(intent);
 
@@ -126,6 +128,11 @@ public class ContactFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void getRandomUserList(List<Result> randomUserList) {
+
     }
 }
 

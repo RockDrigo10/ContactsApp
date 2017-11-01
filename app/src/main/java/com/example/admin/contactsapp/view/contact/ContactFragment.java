@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.admin.contactsapp.App;
 import com.example.admin.contactsapp.R;
+import com.example.admin.contactsapp.inject.DaggerMainActivityComponent;
+import com.example.admin.contactsapp.inject.MainActivityModule;
 import com.example.admin.contactsapp.model.Contact;
 import com.example.admin.contactsapp.model.Result;
 
@@ -76,6 +78,12 @@ public class ContactFragment extends Fragment implements ContactViewContract.Vie
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+        DaggerMainActivityComponent
+                .builder()
+                .mainActivityModule(new MainActivityModule())
+                .appComponent(((App) getActivity().getApplicationContext()).getAppComponent())
+                .build()
+                .inject(this);
         contactPresenter.attachView(this);
         contacts = new ArrayList<>();
         btnSave = view.findViewById(R.id.btnSave);

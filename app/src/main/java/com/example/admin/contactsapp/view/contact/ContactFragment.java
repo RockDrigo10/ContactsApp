@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.admin.contactsapp.App;
 import com.example.admin.contactsapp.R;
 import com.example.admin.contactsapp.model.Contact;
 import com.example.admin.contactsapp.model.Result;
@@ -22,13 +23,16 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class ContactFragment extends Fragment implements ContactViewContract.View {
     public static final int CAMERA_REQUEST = 1888;
-    private ContactViewPresenter contactPresenter;
+    @Inject
+    ContactViewPresenter contactPresenter;
     private Contact contact;
     ArrayList<Contact> contacts;
     @BindView(R.id.ivContactImage)
@@ -72,9 +76,7 @@ public class ContactFragment extends Fragment implements ContactViewContract.Vie
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
-        contactPresenter = new ContactViewPresenter();
         contactPresenter.attachView(this);
-        contactPresenter.setContext(ContactFragment.this.getActivity());
         contacts = new ArrayList<>();
         btnSave = view.findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -84,13 +86,14 @@ public class ContactFragment extends Fragment implements ContactViewContract.Vie
                     contact = new Contact(
                             etFirstName.getText().toString().trim(), etLastName.getText().toString().trim(),
                             etPhone.getText().toString().trim(), etCompany.getText().toString().trim(),
-                            imageViewToByte());
+                            imageViewToByte(),null);
                     contactPresenter.saveContacts(contact);
+                    Toast.makeText(App.getContext(), "Contact Saved!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ContactFragment.this.getActivity(), ContactActivity.class);
                     startActivity(intent);
 
                 } catch (NumberFormatException e) {
-                    Toast.makeText(ContactFragment.this.getActivity(),
+                    Toast.makeText(App.getContext(),
                             "Incorrect Phone Number Format", Toast.LENGTH_LONG).show();
                 }
             }

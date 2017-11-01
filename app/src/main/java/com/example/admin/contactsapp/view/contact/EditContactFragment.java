@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.admin.contactsapp.R;
 import com.example.admin.contactsapp.model.Contact;
 
@@ -27,7 +28,7 @@ public class EditContactFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_contact, container, false);
-
+        Bitmap bitmap = null;
         Contact contact = getArguments().getParcelable("CURRENT_CONTACT");
         etFName = view.findViewById(R.id.etFName);
         etFName.setText(contact.getFirstName());
@@ -39,8 +40,14 @@ public class EditContactFragment extends Fragment {
         etComp.setText(contact.getCompany());
 
         ivImageEdit = view.findViewById(R.id.ivImageEdit);
+
         byte[] contactPhoto = contact.getPhoto();
-        Bitmap bitmap = BitmapFactory.decodeByteArray(contactPhoto, 0, contactPhoto.length);
+        if (contactPhoto == null)
+            Glide.with(EditContactFragment.this.getActivity())
+                    .load(contact.getPic())
+                    .into(ivImageEdit);
+        else
+            bitmap = BitmapFactory.decodeByteArray(contactPhoto, 0, contactPhoto.length);
         ivImageEdit.setImageBitmap(bitmap);
 
         return view;

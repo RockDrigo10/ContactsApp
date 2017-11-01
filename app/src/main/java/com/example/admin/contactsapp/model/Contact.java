@@ -10,16 +10,19 @@ public class Contact implements Parcelable {
     public String phoneNumber;
     public String company;
     public byte[] photo;
+    public String pic;
 
     public Contact() {
     }
 
-    public Contact(String firstName, String lastName, String phoneNumber, String company, byte[] photo) {
+    public Contact(String firstName, String lastName, String phoneNumber, String company, byte[] photo,String pic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
         this.company = company;
         this.photo = photo;
+        this.pic = pic;
+
     }
 
     protected Contact(Parcel in) {
@@ -28,6 +31,7 @@ public class Contact implements Parcelable {
         phoneNumber = in.readString();
         company = in.readString();
         photo = in.createByteArray();
+        pic = in.readString();
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
@@ -82,6 +86,14 @@ public class Contact implements Parcelable {
         this.photo = photo;
     }
 
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -94,5 +106,6 @@ public class Contact implements Parcelable {
         parcel.writeString(phoneNumber);
         parcel.writeString(company);
         parcel.writeByteArray(photo);
+        parcel.writeString(pic);
     }
 }

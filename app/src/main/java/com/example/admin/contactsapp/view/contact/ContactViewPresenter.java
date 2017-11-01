@@ -2,11 +2,13 @@ package com.example.admin.contactsapp.view.contact;
 
 import android.content.Context;
 
+import com.example.admin.contactsapp.App;
 import com.example.admin.contactsapp.data.DatabaseHelper;
 import com.example.admin.contactsapp.model.Contact;
 import com.example.admin.contactsapp.model.Randomuser;
 import com.example.admin.contactsapp.model.Result;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ContactViewPresenter implements ContactViewContract.Presenter {
@@ -24,14 +26,14 @@ public class ContactViewPresenter implements ContactViewContract.Presenter {
         this.view = null;
     }
 
-    @Override
-    public void setContext(Context context) {
-        this.context = context;
-    }
+//    @Override
+//    public void setContext(Context context) {
+//        this.context = context;
+//    }
 
     @Override
     public void saveContacts(Contact contact) {
-        DatabaseHelper db = new DatabaseHelper(context);
+        DatabaseHelper db = new DatabaseHelper(App.getContext());
         db.saveNewContact(contact);
 
     }
@@ -43,7 +45,11 @@ public class ContactViewPresenter implements ContactViewContract.Presenter {
             @Override
             public void onResponse(retrofit2.Call<Randomuser> call, retrofit2.Response<Randomuser> response) {
                 List<Result> user = response.body().getResults();
-                view.getRandomUserList(user);
+                try {
+                    view.getRandomUserList(user);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

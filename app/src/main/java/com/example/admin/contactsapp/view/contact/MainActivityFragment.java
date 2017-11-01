@@ -18,13 +18,19 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.bumptech.glide.Glide;
+import com.example.admin.contactsapp.App;
 import com.example.admin.contactsapp.R;
 import com.example.admin.contactsapp.data.DatabaseHelper;
+import com.example.admin.contactsapp.inject.DaggerMainActivityComponent;
+import com.example.admin.contactsapp.inject.MainActivityModule;
 import com.example.admin.contactsapp.model.Contact;
 import com.example.admin.contactsapp.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,10 +38,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivityFragment extends Fragment implements ContactViewContract.View {
 
-    private ContactViewPresenter contactPresenter;
+    @Inject
+    ContactViewPresenter contactPresenter;
     ArrayList<Contact> contacts = new ArrayList<>();
     //ListView lvContactList;
     ArrayList<AdapterItems> listContacts = new ArrayList<>();
+    Contact listContact = new Contact();
+
     MyCustomAdapter adapter;
     TextView tvEmpty;
     SwipeMenuListView lvContactList;
@@ -50,16 +59,22 @@ public class MainActivityFragment extends Fragment implements ContactViewContrac
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         tvEmpty = view.findViewById(R.id.tvEmpty);
         lvContactList = view.findViewById(R.id.lvContactList);
-        contactPresenter = new ContactViewPresenter();
+        DaggerMainActivityComponent
+                .builder()
+                .mainActivityModule(new MainActivityModule())
+                .appComponent(((App) getActivity().getApplicationContext()).getAppComponent())
+                .build()
+                .inject(this);
         contactPresenter.attachView(this);
-        contactPresenter.setContext(MainActivityFragment.this.getActivity());
+        //contactPresenter.setContext(MainActivityFragment.this.getActivity());
         contactPresenter.restCall();
         DatabaseHelper databaseHelper = new DatabaseHelper(MainActivityFragment.this.getActivity());
         contacts = databaseHelper.getContact();
         for (int i = 0; i < contacts.size(); i++) {
             listContacts.add(new AdapterItems(
                     contacts.get(i).firstName + " " + contacts.get(i).lastName,
-                    contacts.get(i).phoneNumber, contacts.get(i).photo));
+                    contacts.get(i).phoneNumber, contacts.get(i).photo, null));
+
         }
         if (contacts.size() == 0)
             tvEmpty.setVisibility(View.VISIBLE);
@@ -96,33 +111,33 @@ public class MainActivityFragment extends Fragment implements ContactViewContrac
     private SwipeMenuCreator getSwipeMenuCreator() {
         return new SwipeMenuCreator() {
 
-                @Override
-                public void create(SwipeMenu menu) {
+            @Override
+            public void create(SwipeMenu menu) {
 
-                    // create "edit" item
-                    SwipeMenuItem editItem = new SwipeMenuItem(
-                            MainActivityFragment.this.getActivity());
-                    // set item background
-                    editItem.setBackground(new ColorDrawable(Color.rgb(240, 255, 255)));
-                    // set item width
-                    editItem.setWidth(170);
-                    // set item title
-                    editItem.setIcon(R.drawable.ic_mode_edit_black_24dp);
-                    // add to menu
-                    menu.addMenuItem(editItem);
-                    // create "call" item
-                    SwipeMenuItem callItem = new SwipeMenuItem(
-                            MainActivityFragment.this.getActivity());
-                    // set item background
-                    callItem.setBackground(new ColorDrawable(Color.rgb(240, 255, 255)));
-                    // set item width
-                    callItem.setWidth(170);
-                    // set a icon
-                    callItem.setIcon(R.drawable.ic_call_black_48dp);
-                    // add to menu
-                    menu.addMenuItem(callItem);
-                }
-            };
+                // create "edit" item
+                SwipeMenuItem editItem = new SwipeMenuItem(
+                        MainActivityFragment.this.getActivity());
+                // set item background
+                editItem.setBackground(new ColorDrawable(Color.rgb(240, 255, 255)));
+                // set item width
+                editItem.setWidth(170);
+                // set item title
+                editItem.setIcon(R.drawable.ic_mode_edit_black_24dp);
+                // add to menu
+                menu.addMenuItem(editItem);
+                // create "call" item
+                SwipeMenuItem callItem = new SwipeMenuItem(
+                        MainActivityFragment.this.getActivity());
+                // set item background
+                callItem.setBackground(new ColorDrawable(Color.rgb(240, 255, 255)));
+                // set item width
+                callItem.setWidth(170);
+                // set a icon
+                callItem.setIcon(R.drawable.ic_call_black_48dp);
+                // add to menu
+                menu.addMenuItem(callItem);
+            }
+        };
     }
 
     @Override
@@ -134,12 +149,15 @@ public class MainActivityFragment extends Fragment implements ContactViewContrac
     @Override
     public void getRandomUserList(List<Result> randomUserList) {
         for (int i = 0; i < randomUserList.size(); i++) {
-                listContacts.add(new AdapterItems(
-                        String.valueOf(randomUserList.get(i).getName().getFirst()) + " " + String.valueOf(randomUserList.get(i).getName().getLast()),
-                        randomUserList.get(i).getPhone(), randomUserList.get(i).getPicture().getThumbnail().getBytes()));
+
+            listContacts.add(new AdapterItems(
+                    randomUserList.get(i).getName().getFirst() + " " + randomUserList.get(i).getName().getLast(),
+                    randomUserList.get(i).getPhone(), null, randomUserList.get(i).getPicture().getThumbnail()));
+            contacts.add(new Contact(randomUserList.get(i).getName().getFirst(), randomUserList.get(i).getName().getLast(),
+                    randomUserList.get(i).getPhone(), null, null, randomUserList.get(i).getPicture().getThumbnail()));
+            adapter = new MyCustomAdapter(listContacts);
+            lvContactList.setAdapter(adapter);
         }
-        adapter = new MyCustomAdapter(listContacts);
-        lvContactList.setAdapter(adapter);
     }
 
     private class MyCustomAdapter extends BaseAdapter {
@@ -168,7 +186,7 @@ public class MainActivityFragment extends Fragment implements ContactViewContrac
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater mInflater = getActivity().getLayoutInflater();
             View myView = mInflater.inflate(R.layout.layout_listview_contact, null);
-
+            Bitmap bitmap = null;
 //            Contact contact;
 //            contact = contacts.get(position);
             final AdapterItems s = listnewsDataAdpater.get(position);
@@ -179,8 +197,14 @@ public class MainActivityFragment extends Fragment implements ContactViewContrac
             CircleImageView ivShowContactImage = myView.findViewById(R.id.ivShowContactImage);
             //byte[] contactPhoto = contact.getPhoto();
             byte[] contactPhoto = listnewsDataAdpater.get(position).Photo;
-            Bitmap bitmap = BitmapFactory.decodeByteArray(contactPhoto, 0, contactPhoto.length);
+            if (contactPhoto == null)
+                Glide.with(MainActivityFragment.this.getActivity())
+                        .load(s.Pic)
+                        .into(ivShowContactImage);
+            else
+                bitmap = BitmapFactory.decodeByteArray(contactPhoto, 0, contactPhoto.length);
             ivShowContactImage.setImageBitmap(bitmap);
+
 
             return myView;
         }

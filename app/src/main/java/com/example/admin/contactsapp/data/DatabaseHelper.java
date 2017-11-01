@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Contact contact = new Contact(
                         cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4),
-                        cursor.getBlob(5)
+                        cursor.getBlob(5),null
                 );
                 contacts.add(contact);
             } while (cursor.moveToNext());

@@ -9,7 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.admin.contactsapp.App;
 import com.example.admin.contactsapp.R;
+import com.example.admin.contactsapp.inject.DaggerMainActivityComponent;
+import com.example.admin.contactsapp.inject.MainActivityModule;
 
 public class ContactActivity extends AppCompatActivity {
 
@@ -19,7 +22,12 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        DaggerMainActivityComponent
+                .builder()
+                .mainActivityModule(new MainActivityModule())
+                .appComponent(((App) getApplicationContext()).getAppComponent())
+                .build()
+                .inject(this);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
